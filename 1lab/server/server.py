@@ -102,9 +102,7 @@ def handle_client(conn, addr):
                         with open(tmpfile.name, 'rb') as f:
                             segment_data = f.read()
 
-                    # Отправка длины
                     conn.sendall(str(len(segment_data)).encode().ljust(16))
-                    # Отправка данных
                     conn.sendall(segment_data)
                     logging.info(f"Sent segment {filename} [{start}-{end}] to {addr}")
 

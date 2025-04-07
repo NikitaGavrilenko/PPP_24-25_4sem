@@ -55,11 +55,9 @@ def get_segment(sock):
     sock.sendall(json.dumps(request).encode())
 
     try:
-        # Получаем длину данных
         length = int(sock.recv(16).decode().strip())
         data = sock.recv(length)
 
-        # Сохраняем файл
         os.makedirs("downloads", exist_ok=True)
         out_file = f"downloads/{filename}_{start}-{end}.mp3"
         with open(out_file, 'wb') as f:
