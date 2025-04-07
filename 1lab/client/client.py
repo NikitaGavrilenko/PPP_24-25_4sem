@@ -1,6 +1,7 @@
 import socket
 import json
 import logging
+import os
 
 logging.basicConfig(filename='client.log', level=logging.INFO)
 HOST = '127.0.0.1'
@@ -60,13 +61,13 @@ def get_segment(sock):
 
         # Сохраняем файл
         os.makedirs("downloads", exist_ok=True)
-        out_file = f"downloads/segment_{start}-{end}.mp3"
+        out_file = f"downloads/{filename}_{start}-{end}.mp3"
         with open(out_file, 'wb') as f:
             f.write(data)
         print(f"Файл сохранен как {out_file}")
 
     except (ValueError, ConnectionError):
-        print("Ошибка при получении данных")
+        print("Ошибка при получении данных. Возможно указано неверное имя файла.")
 
 
 def main():
