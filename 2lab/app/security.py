@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta  # Импортируем timedelta
+from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer

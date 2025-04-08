@@ -4,7 +4,7 @@ from app.db import get_db
 from app.schemas import UserCreate, User, Token
 from app.models import User as UserModel
 from app.cruds import create_user, get_user, verify_user
-from app.security import create_access_token, get_current_user  # Импортируем функцию
+from app.security import create_access_token, get_current_user
 
 router = APIRouter()
 

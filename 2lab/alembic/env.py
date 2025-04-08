@@ -6,19 +6,15 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 from alembic import context
 
-# Добавляем путь к проекту
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-# Импортируем настройки, базу и модели
 from app.core.config import settings
 from app.db.base import Base
-from app.models import user  # импортируем все модели, иначе Alembic их не увидит
+from app.models import user
 
-# Конфигурация Alembic
 config = context.config
 fileConfig(config.config_file_name)
 
-# Устанавливаем URL из настроек FastAPI
 config.set_main_option("sqlalchemy.url", settings.SQLALCHEMY_DATABASE_URL)
 
 target_metadata = Base.metadata
