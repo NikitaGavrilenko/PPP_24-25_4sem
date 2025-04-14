@@ -8,14 +8,12 @@ from alembic import context
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from app.core.config import settings
-from app.db.base import Base
-from app.models import user
+from app.models import Base
 
 config = context.config
 fileConfig(config.config_file_name)
 
-config.set_main_option("sqlalchemy.url", settings.SQLALCHEMY_DATABASE_URL)
+# config.set_main_option("sqlalchemy.url", settings.SQLALCHEMY_DATABASE_URL)
 
 target_metadata = Base.metadata
 

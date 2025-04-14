@@ -2,11 +2,14 @@ from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
+from sqlalchemy import select
+
 from app.db import get_db
 from sqlalchemy.orm import Session
 from app.models import User
 from app.cruds import get_user
 
+ALLOWED_HOSTS = ['*']
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 SECRET_KEY = "your_secret_key"
 ALGORITHM = "HS256"
@@ -42,7 +45,8 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = De
 
 
 
-async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+async def get_current_user(db: Session = Depends(get_db)):
+    return db.query(User).order_by(User.id.desc()).first()
     credentials_exception = HTTPException(
         status_code=401,
         detail="Could not validate credentials",

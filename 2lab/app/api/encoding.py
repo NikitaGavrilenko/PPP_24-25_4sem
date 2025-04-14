@@ -22,8 +22,6 @@ class DecodeRequest(BaseModel):
 
 class DecodeResponse(BaseModel):
     decoded_text: str
-
-
 @router.post("/encode", response_model=EncodeResponse)
 def encode(request: EncodeRequest):
     encoded_data = base64.b64encode(request.text.encode()).decode()
