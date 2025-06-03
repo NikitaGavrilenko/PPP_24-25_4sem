@@ -1,8 +1,10 @@
+from fastapi import FastAPI, WebSocket
+from app.api import endpoints
+from app.api.websocket import websocket_endpoint
 
-def main():
-    # Ваш код здесь
-    pass
+app = FastAPI()
+app.include_router(endpoints.router)
 
-if __name__ == "__main__":
-    main()
-
+@app.websocket("/ws/{user_id}")
+async def websocket_handler(websocket: WebSocket, user_id: str):
+    await websocket_endpoint(websocket, user_id)
