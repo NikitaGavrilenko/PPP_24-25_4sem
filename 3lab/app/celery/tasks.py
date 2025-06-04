@@ -1,6 +1,8 @@
 import time
 import asyncio
 from app.websocket.manager import ws_manager
+from app.services.huffman import HuffmanCoder
+import base64
 
 
 def run_encoding_task(self, user_id: str, data: str):
@@ -27,26 +29,43 @@ def run_encoding_task(self, user_id: str, data: str):
         await ws_manager.send_message(user_id, self.request.id, message)
 
     try:
+        # Инициализация кодировщика
+        huffman = HuffmanCoder()
+
         # Отправляем начальное уведомление
         asyncio.run(send_async_notification("STARTED"))
 
-        # Имитация процесса кодирования
-        result_data = {"encoded_data": "", "huffman_codes": {}, "padding": 0}
+        # Шаг 1: Анализ данных (10%)
+        frequency = huffman.build_frequency_dict(data)
+        asyncio.run(send_async_notification("PROGRESS", progress=10))
 
-        for progress in range(1, 101):
-            time.sleep(0.1)
-            # Обновляем результат на каждом шаге
-            result_data["encoded_data"] = f"partial_{progress}"
-            result_data["huffman_codes"] = {str(i): bin(i)[2:] for i in range(progress)}
-            result_data["padding"] = progress % 8
+        # Шаг 2: Построение дерева (30%)
+        huffman.build_huffman_tree(frequency)
+        asyncio.run(send_async_notification("PROGRESS", progress=30))
 
-            asyncio.run(send_async_notification("PROGRESS", progress=progress))
+        # Шаг 3: Генерация кодов (50%)
+        huffman.build_codes(huffman.build_huffman_tree(frequency))
+        asyncio.run(send_async_notification("PROGRESS", progress=50))
+
+        # Шаг 4: Кодирование данных (70%)
+        encoded_bits, padding = huffman.encode_data(data)
+        asyncio.run(send_async_notification("PROGRESS", progress=70))
+
+        # Шаг 5: Преобразование в base64 (90%)
+        # Конвертируем битовую строку в байты
+        byte_array = bytearray()
+        for i in range(0, len(encoded_bits), 8):
+            byte = encoded_bits[i:i + 8]
+            byte_array.append(int(byte, 2))
+
+        encoded_base64 = base64.b64encode(byte_array).decode('utf-8')
+        asyncio.run(send_async_notification("PROGRESS", progress=90))
 
         # Финальный результат
         final_result = {
-            "encoded_data": "base64_encoded_final",
-            "huffman_codes": {"A": "101", "B": "110", "C": "1110"},
-            "padding": 4
+            "encoded_data": encoded_base64,
+            "huffman_codes": huffman.get_codes(),
+            "padding": padding
         }
         asyncio.run(send_async_notification("COMPLETED", result=final_result))
         return final_result
