@@ -61,7 +61,6 @@ def run_encoding_task(self, user_id: str, data: str):
         encoded_base64 = base64.b64encode(byte_array).decode('utf-8')
         asyncio.run(send_async_notification("PROGRESS", progress=90))
 
-        # Финальный результат
         final_result = {
             "encoded_data": encoded_base64,
             "huffman_codes": huffman.get_codes(),

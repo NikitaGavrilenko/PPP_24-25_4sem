@@ -36,11 +36,9 @@ async def main():
     user_id = "user123"
     client = WebSocketClient(user_id)
 
-    # Пример: создаем 3 задачи и слушаем их
     for i in range(3):
         task_id = str(uuid.uuid4())
         print(f"Starting task {task_id}")
-        # Здесь должен быть реальный вызов API для запуска задачи
         await client.connect_to_task(task_id)
 
     # Ждем завершения всех задач

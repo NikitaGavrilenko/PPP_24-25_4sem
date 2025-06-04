@@ -10,13 +10,13 @@ class EncodeRequest(BaseModel):
 
 @router.post("/encode")
 async def start_encoding(request: EncodeRequest):
-    user_id = "user123"  # В реальности - из токена
+    user_id = "user123"
     task = start_encoding_task(user_id, request.data)
     return {
         "message": "Encoding started in background",
         "user_id": user_id,
         "task_id": task.id,
-        "websocket_url": f"/ws/{user_id}/{task.id}"  # Клиент узнает куда подключаться
+        "websocket_url": f"/ws/{user_id}/{task.id}"
     }
 
 
