@@ -1,5 +1,5 @@
 from fastapi import WebSocket
-from typing import Dict
+from typing import Dict, Optional
 import json
 
 class WebSocketManager:
@@ -10,11 +10,16 @@ class WebSocketManager:
         await websocket.accept()
         self.active_connections[user_id] = websocket
 
-    async def send_progress(self, user_id: str, progress: int):
+    def disconnect(self, user_id: str):
+        if user_id in self.active_connections:
+            del self.active_connections[user_id]
+
+    async def send_message(self, user_id: str, message: dict):
         if conn := self.active_connections.get(user_id):
-            await conn.send_json({
-                'type': 'progress',
-                'progress': progress
-            })
+            try:
+                await conn.send_json(message)
+            except Exception as e:
+                print(f"Error sending message to {user_id}: {e}")
+                self.disconnect(user_id)
 
 ws_manager = WebSocketManager()

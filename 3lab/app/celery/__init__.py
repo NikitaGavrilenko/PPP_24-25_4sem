@@ -4,7 +4,7 @@ app = Celery(
     'tasks',
     broker='sqla+sqlite:///celery_broker.db',
     backend='db+sqlite:///celery_results.db',
-    include=['app.celery.tasks']
+    include=['app.celery.tasks', 'app.celery.config']  # Добавьте оба модуля!
 )
 
 app.conf.update(
