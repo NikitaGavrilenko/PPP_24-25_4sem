@@ -15,7 +15,8 @@ async def start_encoding(request: EncodeRequest):
     return {
         "message": "Encoding started in background",
         "user_id": user_id,
-        "task_id": task.id
+        "task_id": task.id,
+        "websocket_url": f"/ws/{user_id}/{task.id}"  # Клиент узнает куда подключаться
     }
 
 
